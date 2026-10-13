@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Verified Vendor Directory{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+  <div>
+    <h1 style="font-size: 1.75rem; font-weight: 700;">Approved Vendor Registry</h1>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">Authoritative directory of verified business entities and certified billing contacts</p>
+  </div>
+</div>
+
+<div class="card">
+  <table id="vendor-table">
+    <thead>
+      <tr>
+        <th>Vendor ID</th>
+        <th>Vendor Entity Name</th>
+        <th>Certified Billing Contact</th>
+        <th>Standard Terms</th>
+        <th>Verification Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in vendors %}
+      <tr id="vendor-row-{{ v.id }}" data-vendor-name="{{ v.name }}">
+        <td style="font-family: monospace; color: var(--text-muted);">{{ v.id }}</td>
+        <td style="font-weight: 600; color: #fff;" id="vendor-name-{{ v.id }}">{{ v.name }}</td>
+        <td style="color: var(--accent);" id="vendor-email-{{ v.id }}">{{ v.contact_email }}</td>
+        <td>Net {{ v.payment_terms_days }} Days</td>
+        <td>
+          {% if v.is_verified %}
+          <span class="badge badge-paid">Certified</span>
+          {% else %}
+          <span class="badge badge-unpaid">Pending</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

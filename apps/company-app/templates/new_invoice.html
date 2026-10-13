@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Enter New Invoice{% endblock %}
+
+{% block content %}
+<div style="max-width: 700px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem;">
+    <a href="/invoices" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">&larr; Back to Invoice Register</a>
+    <h1 style="font-size: 1.75rem; font-weight: 700; margin-top: 0.5rem;">
+      {% if perturbation_enabled %}
+        Document Record Entry [Modified UI]
+      {% else %}
+        Enter Internal Invoice
+      {% endif %}
+    </h1>
+    {% if perturbation_enabled %}
+    <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid var(--warning); padding: 0.6rem 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.85rem; color: #fde68a;">
+      ⚠️ <strong>UI Perturbation Active:</strong> Button labels, field order, and confirmation requirements have been perturbed to test agent adaptation.
+    </div>
+    {% endif %}
+  </div>
+
+  {% if error %}
+  <div class="alert alert-error" id="form-error">{{ error }}</div>
+  {% endif %}
+
+  <div class="card">
+    <form action="/invoices" method="POST" id="new-invoice-form">
+      <input type="hidden" name="source" value="manual">
+
+      {% if not perturbation_enabled %}
+      <!-- Standard Layout -->
+      <div class="form-group">
+        <label for="vendor">Vendor Name *</label>
+        <input type="text" id="vendor" name="vendor" required placeholder="e.g. Company X" value="{{ initial_vendor or '' }}">
+      </div>
+
+      <div class="form-group">
+        <label for="invoice_number">Invoice Number *</label>
+        <input type="text" id="invoice_number" name="invoice_number" required placeholder="e.g. INV-X-003" value="{{ initial_invoice_number or '' }}">
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="amount">Total Amount *</label>
+          <input type="number" step="0.01" id="amount" name="amount" required placeholder="0.00" value="{{ initial_amount or '' }}">
+        </div>
+        <div class="form-group">
+          <label for="currency">Currency *</label>
+          <select id="currency" name="currency">
+            <option value="USD" selected>USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="INR">INR (₹)</option>
+            <option value="GBP">GBP (£)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="issue_date">Issue Date</label>
+          <input type="date" id="issue_date" name="issue_date" value="{{ initial_issue_date or '' }}">
+        </div>
+        <div class="form-group">
+          <label for="due_date">Due Date *</label>
+          <input type="date" id="due_date" name="due_date" required value="{{ initial_due_date or '' }}">
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:1.5rem;">
+        <a href="/invoices" class="btn btn-secondary">Cancel</a>
+        <button type="submit" id="btn-save-invoice" class="btn btn-primary">Save Invoice</button>
+      </div>
+
+      {% else %}
+      <!-- Perturbed Layout -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="amount">Financial Total (Amount) *</label>
+          <input type="number" step="0.01" id="amount" name="amount" required placeholder="0.00" value="{{ initial_amount or '' }}">
+        </div>
+        <div class="form-group">
+          <label for="currency">Currency Code *</label>
+          <select id="currency" name="currency">
+            <option value="USD" selected>USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="INR">INR (₹)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="vendor">Merchant / Supplier Entity *</label>
+        <input type="text" id="vendor" name="vendor" required placeholder="e.g. Company X" value="{{ initial_vendor or '' }}">
+      </div>
+
+      <div class="form-group">
+        <label for="field-reference-doc">Reference / Doc # *</label>
+        <input type="text" id="field-reference-doc" name="invoice_number" required placeholder="e.g. INV-X-003" value="{{ initial_invoice_number or '' }}">
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="due_date">Payment Deadline (Due Date) *</label>
+          <input type="date" id="due_date" name="due_date" required value="{{ initial_due_date or '' }}">
+        </div>
+        <div class="form-group">
+          <label for="issue_date">Billing Origin Date</label>
+          <input type="date" id="issue_date" name="issue_date" value="{{ initial_issue_date or '' }}">
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 1rem; background: #0f172a; padding: 0.8rem; border-radius: 6px; border: 1px dashed var(--card-border);">
+        <label style="display:flex; align-items:center; gap: 0.5rem; cursor:pointer; color:#fff;">
+          <input type="checkbox" id="confirm-accuracy" name="confirm_accuracy" required style="width:auto;">
+          <span>I verify that the document information has been extracted and reviewed.</span>
+        </label>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:1.5rem;">
+        <a href="/invoices" class="btn btn-secondary">Cancel</a>
+        <button type="submit" id="btn-submit-entry" class="btn btn-primary">Submit Entry to Ledger</button>
+      </div>
+      {% endif %}
+
+    </form>
+  </div>
+</div>
+{% endblock %}

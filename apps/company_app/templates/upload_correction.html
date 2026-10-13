@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Corrected Invoice Document{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 2rem auto;">
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <h1 style="font-size: 1.8rem; font-weight: 700;">Vendor Secure Document Portal</h1>
+    <p style="color: var(--text-muted); margin-top: 0.5rem;">Upload revised billing invoice document</p>
+  </div>
+
+  {% if is_valid_token %}
+  <div class="card">
+    <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem;">
+      <h4 style="color: var(--accent); font-size: 0.95rem; margin-bottom: 0.4rem;">Correction Request Details:</h4>
+      <p style="font-size: 0.85rem; color: #cbd5e1;">Invoice Reference: <strong>{{ invoice_ref }}</strong></p>
+      <p style="font-size: 0.85rem; color: #cbd5e1;">Vendor Contact: <strong>{{ vendor_contact }}</strong></p>
+      <p style="font-size: 0.85rem; color: #f87171; margin-top: 0.4rem;">Required Action: Please upload a corrected PDF containing all required fields.</p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-error">{{ error }}</div>
+    {% endif %}
+
+    <form action="/upload-correction" method="POST" enctype="multipart/form-data" id="correction-upload-form">
+      <input type="hidden" name="token" value="{{ token }}">
+
+      <div class="form-group">
+        <label for="pdf_file">Select Corrected PDF File * (PDF only, max 10MB)</label>
+        <input type="file" id="pdf_file" name="pdf_file" accept=".pdf,application/pdf" required style="padding: 0.8rem; background: #0f172a;">
+      </div>
+
+      <button type="submit" id="btn-submit-correction" class="btn btn-primary" style="width: 100%; padding: 0.75rem; margin-top: 1rem;">
+        Submit Corrected Invoice
+      </button>
+    </form>
+  </div>
+  {% else %}
+  <div class="card" style="text-align: center; border-color: var(--danger);">
+    <h3 style="color: var(--danger); margin-bottom: 1rem;">Invalid or Expired Link</h3>
+    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">
+      {{ error_message or "This upload link is invalid, has already been used, or has expired. For audit compliance, single-use tokens cannot be re-used." }}
+    </p>
+    <a href="/invoices" class="btn btn-secondary" style="margin-top: 1.5rem;">Return to Portal</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

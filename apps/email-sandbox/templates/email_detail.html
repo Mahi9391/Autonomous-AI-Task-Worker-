@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ email.subject }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1rem;">
+  <a href="/inbox" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">&larr; Back to Messages</a>
+</div>
+
+<div class="card" id="email-view-card">
+  <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 1.25rem; margin-bottom: 1.25rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem;" id="email-subject">{{ email.subject }}</h2>
+    <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-muted);">
+      <div>
+        <div>From: <strong style="color:#fff;" id="email-sender">{{ email.sender }}</strong></div>
+        <div style="margin-top:0.2rem;">To: <span style="color:#cbd5e1;" id="email-recipient">{{ email.recipient }}</span></div>
+        {% if email.idempotency_key %}
+        <div style="margin-top:0.2rem; font-family:monospace; color:#38bdf8;">Idempotency Key: <span id="email-idempotency-key">{{ email.idempotency_key }}</span></div>
+        {% endif %}
+      </div>
+      <div id="email-timestamp">{{ email.timestamp }}</div>
+    </div>
+  </div>
+
+  <div style="font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; margin-bottom: 2rem;" id="email-body">{{ email.body }}</div>
+
+  {% if attachments %}
+  <div style="background:#090d16; border: 1px solid var(--card-border); border-radius: 6px; padding: 1rem;">
+    <h4 style="font-size: 0.85rem; text-transform:uppercase; color:var(--text-muted); margin-bottom: 0.75rem;">Attached Documents ({{ attachments|length }})</h4>
+    <div style="display:flex; flex-direction:column; gap:0.5rem;">
+      {% for att in attachments %}
+      <div style="display:flex; justify-content:space-between; align-items:center; background:#1e293b; padding:0.6rem 1rem; border-radius: 4px;">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <span>📄</span>
+          <span style="font-weight: 600; font-size: 0.9rem;" id="attachment-name">{{ att }}</span>
+        </div>
+        <a href="/attachments/{{ att }}" id="btn-download-pdf" class="btn btn-primary" style="padding:0.3rem 0.8rem; font-size:0.8rem;" download>
+          Download PDF
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Sent / Outbox{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.25rem;">
+    <div>
+      <h2 style="font-size: 1.4rem; font-weight: 700;">Sent Messages & Payment Reminders</h2>
+      <p style="color:var(--text-muted); font-size:0.85rem;">Sandbox audit log of outbound emails and idempotency keys</p>
+    </div>
+    <span style="font-size:0.85rem; color:var(--text-muted);">Total Sent: <strong id="outbox-total-count">{{ emails|length }}</strong></span>
+  </div>
+
+  <table id="outbox-table">
+    <thead>
+      <tr>
+        <th style="width: 25%;">Recipient</th>
+        <th style="width: 40%;">Subject</th>
+        <th style="width: 20%;">Idempotency Key</th>
+        <th style="width: 15%;">Sent At</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for em in emails %}
+      <tr id="outbox-row-{{ em.id }}" class="outbox-row" data-recipient="{{ em.recipient }}" data-idempotency="{{ em.idempotency_key or '' }}">
+        <td style="font-weight: 600; color: var(--accent);">{{ em.recipient }}</td>
+        <td>
+          <a href="/email/{{ em.id }}" id="link-sent-{{ em.id }}" style="color:var(--text-main); text-decoration:none;">{{ em.subject }}</a>
+        </td>
+        <td style="font-family:monospace; font-size:0.8rem; color:#a7f3d0;" id="outbox-key-{{ em.id }}">{{ em.idempotency_key or 'None' }}</td>
+        <td style="color:var(--text-muted); font-size:0.85rem;">{{ em.timestamp[:19] }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="4" style="text-align:center; padding: 2rem; color:var(--text-muted);">
+          No sent messages yet in this session.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

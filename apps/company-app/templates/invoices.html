@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Invoice Register{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+  <div>
+    <h1 style="font-size: 1.75rem; font-weight: 700;">Internal Accounts Payable Register</h1>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">Authoritative invoice records verified by audit compliance</p>
+  </div>
+  <a href="/invoices/new" id="btn-create-invoice" class="btn btn-primary">+ Enter Invoice</a>
+</div>
+
+{% if message %}
+<div class="alert alert-success" id="success-banner">{{ message }}</div>
+{% endif %}
+
+<div class="card">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+    <div style="display:flex; gap: 0.5rem; align-items:center;">
+      <span style="font-weight: 600; font-size: 0.9rem;">Filter Status:</span>
+      <a href="/invoices" class="btn btn-secondary" style="padding:0.25rem 0.6rem; font-size:0.8rem;">All</a>
+      <a href="/invoices?status=unpaid" class="btn btn-secondary" style="padding:0.25rem 0.6rem; font-size:0.8rem;">Unpaid</a>
+      <a href="/invoices?status=overdue" class="btn btn-secondary" style="padding:0.25rem 0.6rem; font-size:0.8rem;">Overdue</a>
+      <a href="/invoices?status=paid" class="btn btn-secondary" style="padding:0.25rem 0.6rem; font-size:0.8rem;">Paid</a>
+    </div>
+    <span style="color:var(--text-muted); font-size:0.85rem;">Total Records: <strong>{{ invoices|length }}</strong></span>
+  </div>
+
+  <table id="invoice-table">
+    <thead>
+      <tr>
+        <th>Invoice #</th>
+        <th>Vendor</th>
+        <th>Amount</th>
+        <th>Due Date</th>
+        <th>Status</th>
+        <th>Source</th>
+        <th>Reminders</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for inv in invoices %}
+      <tr id="invoice-row-{{ inv.id }}" data-invoice-number="{{ inv.invoice_number }}" data-vendor="{{ inv.vendor }}">
+        <td style="font-weight: 600; color: var(--accent);">
+          <a href="/invoices/{{ inv.id }}" id="link-invoice-{{ inv.invoice_number }}" style="color:var(--accent); text-decoration:none;">{{ inv.invoice_number }}</a>
+        </td>
+        <td>{{ inv.vendor }}</td>
+        <td>{{ inv.currency }} {{ "%.2f"|format(inv.amount) }}</td>
+        <td>{{ inv.due_date }}</td>
+        <td>
+          <span class="badge badge-{{ inv.status }}" id="badge-status-{{ inv.invoice_number }}">{{ inv.status }}</span>
+        </td>
+        <td style="color:var(--text-muted); font-size:0.85rem;">{{ inv.source }}</td>
+        <td style="font-size:0.85rem;">
+          {% if inv.reminder_count > 0 %}
+            <span style="color:#38bdf8;">{{ inv.reminder_count }} sent</span>
+          {% else %}
+            <span style="color:var(--text-muted);">0</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="/invoices/{{ inv.id }}" class="btn btn-secondary" style="padding:0.25rem 0.5rem; font-size:0.8rem;" id="view-details-{{ inv.invoice_number }}">Details</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="8" style="text-align:center; padding: 2rem; color: var(--text-muted);">
+          No invoices found in database.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

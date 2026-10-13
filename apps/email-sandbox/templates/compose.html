@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Compose Email{% endblock %}
+
+{% block content %}
+<div style="max-width: 750px; margin: 0 auto;">
+  <div style="margin-bottom: 1rem;">
+    <a href="/outbox" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">&larr; Back to Sent Messages</a>
+    <h1 style="font-size: 1.6rem; font-weight: 700; margin-top: 0.5rem;">Compose Email (Sandbox)</h1>
+  </div>
+
+  <div class="card">
+    <form action="/send" method="POST" id="compose-form">
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label for="recipient">To Recipient *</label>
+        <input type="email" id="recipient" name="recipient" required placeholder="vendor@example.internal">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label for="subject">Subject Line *</label>
+        <input type="text" id="subject" name="subject" required placeholder="e.g. Payment Reminder: Invoice INV-123">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label for="body">Message Body *</label>
+        <textarea id="body" name="body" rows="8" required placeholder="Write message..."></textarea>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label for="idempotency_key">Idempotency Key (Optional / Audit Tracking)</label>
+        <input type="text" id="idempotency_key" name="idempotency_key" placeholder="e.g. REMIND-DELTA-101-20261012">
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:1rem;">
+        <a href="/inbox" class="btn btn-secondary">Cancel</a>
+        <button type="submit" id="btn-send-email" class="btn btn-primary">Send Email</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

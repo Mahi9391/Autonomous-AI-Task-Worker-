@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Invoice {{ invoice.invoice_number }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem; display:flex; justify-content:space-between; align-items:center;">
+    <div>
+      <a href="/invoices" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;">&larr; Back to Register</a>
+      <h1 style="font-size: 1.75rem; font-weight: 700; margin-top: 0.5rem;" id="invoice-header">Invoice #{{ invoice.invoice_number }}</h1>
+    </div>
+    <span class="badge badge-{{ invoice.status }}" style="font-size: 0.9rem; padding: 0.4rem 1rem;" id="detail-status">{{ invoice.status }}</span>
+  </div>
+
+  <div class="card" id="invoice-detail-card">
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+      <div>
+        <span style="color:var(--text-muted); font-size:0.85rem;">Vendor Entity</span>
+        <h3 style="font-size: 1.2rem; font-weight: 600; margin-top: 0.2rem;" id="detail-vendor">{{ invoice.vendor }}</h3>
+      </div>
+      <div>
+        <span style="color:var(--text-muted); font-size:0.85rem;">Invoice Reference</span>
+        <h3 style="font-size: 1.2rem; font-weight: 600; margin-top: 0.2rem;" id="detail-invoice-number">{{ invoice.invoice_number }}</h3>
+      </div>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 1.5rem 0;">
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+      <div>
+        <span style="color:var(--text-muted); font-size:0.85rem;">Total Amount</span>
+        <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-top: 0.2rem;">
+          <span id="detail-currency">{{ invoice.currency }}</span> <span id="detail-amount">{{ "%.2f"|format(invoice.amount) }}</span>
+        </div>
+      </div>
+      <div>
+        <span style="color:var(--text-muted); font-size:0.85rem;">Issue Date</span>
+        <div style="font-size: 1rem; margin-top: 0.3rem;" id="detail-issue-date">{{ invoice.issue_date or 'N/A' }}</div>
+      </div>
+      <div>
+        <span style="color:var(--text-muted); font-size:0.85rem;">Due Date</span>
+        <div style="font-size: 1.1rem; font-weight: 600; color: #f59e0b; margin-top: 0.3rem;" id="detail-due-date">{{ invoice.due_date }}</div>
+      </div>
+    </div>
+
+    <div style="background:#0f172a; padding: 1rem; border-radius: 6px; font-size: 0.85rem; color: var(--text-muted);">
+      <div style="display:flex; justify-content:space-between; margin-bottom: 0.4rem;">
+        <span>System Record ID:</span>
+        <span style="font-family:monospace; color:#fff;" id="detail-record-id">{{ invoice.id }}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom: 0.4rem;">
+        <span>Ingestion Source:</span>
+        <span style="color:#fff;" id="detail-source">{{ invoice.source }}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom: 0.4rem;">
+        <span>Content SHA-256 Hash:</span>
+        <span style="font-family:monospace; color:#fff;" id="detail-file-hash">{{ invoice.file_hash or 'N/A' }}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between;">
+        <span>Payment Follow-up Reminders:</span>
+        <span style="color:#38bdf8;" id="detail-reminders-sent">{{ invoice.reminder_count }} sent</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

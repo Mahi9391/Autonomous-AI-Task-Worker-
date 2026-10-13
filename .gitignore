@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+env/
+venv/
+ENV/
+
+# Data and runtime artifacts
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/pids.json
+data/downloads/*
+!data/downloads/.gitkeep
+data/watched/*
+!data/watched/.gitkeep
+data/uploads/*
+!data/uploads/.gitkeep
+data/traces/*
+!data/traces/.gitkeep
+
+# Environment variables
+.env
+.env.local
+
+# Node
+node_modules/
+dist/
+build/
+.npm
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Archives
+*.zip
+*.tar.gz

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Inbox{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.25rem;">
+    <h2 style="font-size: 1.4rem; font-weight: 700;">Inbox Messages</h2>
+    <form action="/inbox" method="GET" style="display:flex; gap:0.5rem; max-width: 350px; width: 100%;">
+      <input type="text" id="inbox-search" name="q" placeholder="Search sender, subject..." value="{{ search_query or '' }}">
+      <button type="submit" id="btn-search-inbox" class="btn btn-secondary">Search</button>
+    </form>
+  </div>
+
+  <table id="email-table">
+    <thead>
+      <tr>
+        <th style="width: 25%;">From</th>
+        <th style="width: 45%;">Subject</th>
+        <th style="width: 15%;">Attachment</th>
+        <th style="width: 15%;">Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for em in emails %}
+      <tr id="email-row-{{ em.id }}" class="email-row" data-sender="{{ em.sender }}" data-subject="{{ em.subject }}" style="cursor:pointer;" onclick="window.location='/email/{{ em.id }}'">
+        <td style="font-weight: 600; color: #fff;">{{ em.sender }}</td>
+        <td>
+          <a href="/email/{{ em.id }}" id="link-email-{{ em.id }}" style="color:var(--text-main); text-decoration:none; font-weight: 500;">
+            {{ em.subject }}
+          </a>
+        </td>
+        <td>
+          {% if em.attachments_list %}
+            <span class="badge badge-attachment" id="attachment-badge-{{ em.id }}">📎 {{ em.attachments_list|length }} PDF</span>
+          {% else %}
+            <span style="color:var(--text-muted); font-size:0.8rem;">None</span>
+          {% endif %}
+        </td>
+        <td style="color:var(--text-muted); font-size:0.85rem;">{{ em.timestamp[:10] }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="4" style="text-align:center; padding: 2rem; color:var(--text-muted);">
+          No messages found.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
